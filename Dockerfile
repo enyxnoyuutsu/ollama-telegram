@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.11.9-alpine
 
 ARG APPHOMEDIR=code
 ARG USERNAME=user

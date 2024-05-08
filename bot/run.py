@@ -66,7 +66,7 @@ async def command_start_handler(message: Message) -> None:
 # /reset command, wipes context (history)
 @dp.message(Command("reset"))
 async def command_reset_handler(message: Message) -> None:
-    if message.from_user.id in allowed_ids:
+    if message.from_user.id in allowed_ids or message.from_user.id in allowed_chats:
         if message.from_user.id in ACTIVE_CHATS:
             async with ACTIVE_CHATS_LOCK:
                 ACTIVE_CHATS.pop(message.from_user.id)

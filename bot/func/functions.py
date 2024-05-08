@@ -12,6 +12,7 @@ load_dotenv()
 token = os.getenv("TOKEN")
 allowed_ids = list(map(int, os.getenv("USER_IDS", "").split(",")))
 admin_ids = list(map(int, os.getenv("ADMIN_IDS", "").split(",")))
+allowed_chats = list(map(int, os.getenv("GROUP_IDS", "").split(",")))
 ollama_base_url = os.getenv("OLLAMA_BASE_URL")
 ollama_port = os.getenv("OLLAMA_PORT", "11434")
 log_level_str = os.getenv("LOG_LEVEL", "INFO")
@@ -59,18 +60,18 @@ def perms_allowed(func):
     @wraps(func)
     async def wrapper(message: types.Message = None, query: types.CallbackQuery = None):
         user_id = message.from_user.id if message else query.from_user.id
-        if user_id in admin_ids or user_id in allowed_ids:
+        if user_id in admin_ids or user_id in allowed_ids or user_id in allowed_chats:
             if message:
                 return await func(message)
             elif query:
                 return await func(query=query)
         else:
             if message:
-                if message and message.chat.type in ["supergroup", "group"]:
+                if message and message.chat.type in ["group"]:
                     return
                 await message.answer("Access Denied")
             elif query:
-                if message and message.chat.type in ["supergroup", "group"]:
+                if message and message.chat.type in ["group"]:
                     return
                 await query.answer("Access Denied")
 
